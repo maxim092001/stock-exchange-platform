@@ -1,5 +1,10 @@
 # Stock exchange platform
 
+The general idea is to create a platform with realtime information about stocks and functionality to buy this stocks as a test. This can help students/people who are scared to invest their own money to test how market actually works.
+
+Project is fully opensource and free-to-use.
+
+
 <a href="https://typelevel.org/cats/"><img src="https://raw.githubusercontent.com/typelevel/cats/c23130d2c2e4a320ba4cde9a7c7895c6f217d305/docs/src/main/resources/microsite/img/cats-badge.svg" height="40px" align="right" alt="Cats friendly" /></a>
 ## Status
 
