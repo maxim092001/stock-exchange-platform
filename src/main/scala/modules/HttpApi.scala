@@ -1,7 +1,7 @@
 package org.maximgran.stock_exchange_platform
 package modules
 
-import http.routes.{StockRoutes, UserRoutes}
+import http.routes.{ StockRoutes, UserRoutes }
 
 import cats.effect.Async
 import cats.syntax.all._
@@ -11,7 +11,7 @@ import org.http4s.implicits._
 import org.http4s.server.Router
 import org.http4s.server.middleware._
 import http.auth.users.CommonUser
-import http.routes.auth.{LoginRoutes, LogoutRoutes}
+import http.routes.auth.{ LoginRoutes, LogoutRoutes }
 
 import scala.concurrent.duration.DurationInt
 
