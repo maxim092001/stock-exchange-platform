@@ -15,6 +15,7 @@ import eu.timepit.refined.types.net.UserPortNumber
 import eu.timepit.refined.types.numeric.PosInt
 import eu.timepit.refined.types.string.NonEmptyString
 import io.estatico.newtype.macros.newtype
+import org.http4s.Uri
 
 object types {
 
@@ -70,4 +71,12 @@ object types {
   // Redis
   @newtype case class RedisURI(value: NonEmptyString)
   @newtype case class RedisConfig(uri: RedisURI)
+
+  // Alphavantage
+  @newtype case class AlphavantageApiKey(value: NonEmptyString)
+  @newtype case class AlphavantageUri(value: Uri)
+  case class AlphavantageConfig(
+      apiKey: AlphavantageApiKey,
+      uri: AlphavantageUri
+  )
 }

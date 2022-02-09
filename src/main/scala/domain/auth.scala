@@ -66,10 +66,22 @@ object auth {
   case class InvalidPassword(username: UserName) extends NoStackTrace
   case object UnsupportedOperation               extends NoStackTrace
 
-  // user login
+  // User login
   @derive(decoder, encoder)
   case class LoginUser(
       username: UserNameParam,
       password: PasswordParam
+  )
+
+  // User buy stock
+
+  @derive(decoder, encoder)
+  @newtype
+  case class StockTickerParam(value: String)
+
+  @derive(decoder, encoder)
+  case class UserBuyStock(
+      username: UserNameParam,
+      stockTicker: StockTickerParam
   )
 }

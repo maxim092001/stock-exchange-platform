@@ -11,8 +11,8 @@ object codecs {
 
   // Stocks
 
-  val stockId: Codec[StockId]       = uuid.imap[StockId](StockId(_))(_.value)
-  val stockToken: Codec[StockToken] = varchar.imap[StockToken](StockToken(_))(_.value)
+  val stockId: Codec[StockId]         = uuid.imap[StockId](StockId(_))(_.value)
+  val stockTicker: Codec[StockTicker] = varchar.imap[StockTicker](StockTicker(_))(_.value)
   val stockDescription: Codec[StockDescription] =
     varchar.imap[StockDescription](StockDescription(_))(_.value)
 

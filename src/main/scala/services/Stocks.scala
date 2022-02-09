@@ -2,7 +2,7 @@ package org.maximgran.stock_exchange_platform
 package services
 
 import domain.ID
-import domain.stock.{ CreateStock, Stock, StockId, StockToken }
+import domain.stock.{ CreateStock, Stock, StockId, StockTicker }
 import effects.GenUUID
 import sql.codecs._
 
@@ -14,7 +14,7 @@ import skunk.implicits._
 trait Stocks[F[_]] {
   def findById(id: StockId): F[Option[Stock]]
   def findAll: F[List[Stock]]
-  def findBy(token: StockToken): F[Option[Stock]]
+  def findBy(ticker: StockTicker): F[Option[Stock]]
   def create(stock: CreateStock): F[StockId]
 }
 
@@ -34,8 +34,8 @@ object Stocks {
         }
       def findAll: F[List[Stock]] = postgres.use(_.execute(selectAll))
 
-      def findBy(token: StockToken): F[Option[Stock]] = postgres.use { session =>
-        session.prepare(selectByToken).use { ps =>
+      def findBy(token: StockTicker): F[Option[Stock]] = postgres.use { session =>
+        session.prepare(selectByTicker).use { ps =>
           ps.option(token)
         }
       }
@@ -43,7 +43,7 @@ object Stocks {
       def create(stock: CreateStock): F[StockId] = postgres.use { session =>
         session.prepare(insertStock).use { cmd =>
           ID.make[F, StockId].flatMap { id =>
-            cmd.execute(Stock(id, stock.token, stock.description)).as(id)
+            cmd.execute(Stock(id, stock.ticker, stock.description)).as(id)
           }
         }
       }
@@ -53,12 +53,12 @@ object Stocks {
 private object StockSQL {
 
   val codec: Codec[Stock] =
-    (stockId ~ stockToken ~ stockDescription).imap { case id ~ t ~ d =>
+    (stockId ~ stockTicker ~ stockDescription).imap { case id ~ t ~ d =>
       Stock(id, t, d)
-    }(s => s.id ~ s.token ~ s.description)
+    }(s => s.id ~ s.ticker ~ s.description)
 
   val decoder: Decoder[Stock] =
-    (stockId ~ stockToken ~ stockDescription).map { case id ~ t ~ d =>
+    (stockId ~ stockTicker ~ stockDescription).map { case id ~ t ~ d =>
       Stock(id, t, d)
     }
 
@@ -74,11 +74,11 @@ private object StockSQL {
          where i.uuid = $stockId
        """.query(decoder)
 
-  val selectByToken: Query[StockToken, Stock] =
+  val selectByTicker: Query[StockTicker, Stock] =
     sql"""
         select i.uuid, i.token, i.description
         from stocks as i
-        where i.token LIKE $stockToken
+        where i.token LIKE $stockTicker
        """.query(decoder)
 
   val insertStock: Command[Stock] =

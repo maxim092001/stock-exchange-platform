@@ -1,7 +1,7 @@
 package org.maximgran.stock_exchange_platform
 package http.routes
 
-import domain.stock.{ CreateStockParam, Stock, StockQueryTokenParam, StockTokenParam }
+import domain.stock.{ CreateStockParam, Stock, StockQueryTickerParam, StockTickerParam }
 import ext.http4s.refined.RefinedRequestDecoder
 import services.Stocks
 
@@ -21,15 +21,15 @@ final case class StockRoutes[F[_]: JsonDecoder: MonadThrow](
 
   private[routes] val prefixPath = "/stocks"
 
-  object StockTokenQueryParam extends OptionalQueryParamDecoderMatcher[StockQueryTokenParam]("token")
+  object StockTickerQueryParam extends OptionalQueryParamDecoderMatcher[StockQueryTickerParam]("token")
 
   private val httpRoutes: HttpRoutes[F] = HttpRoutes.of[F] {
-    case GET -> Root :? StockTokenQueryParam(token) =>
-      token
-        .map(b =>
-          stocks.findBy(b.toDomain).flatMap {
+    case GET -> Root :? StockTickerQueryParam(ticker) =>
+      ticker
+        .map(t =>
+          stocks.findBy(t.toDomain).flatMap {
             case Some(x) => Ok(x)
-            case None    => NotFound(s"No stock with such token: ${b.value}")
+            case None    => NotFound(s"No stock with such token: ${t.value}")
           }
         )
         .getOrElse(Ok(stocks.findAll))

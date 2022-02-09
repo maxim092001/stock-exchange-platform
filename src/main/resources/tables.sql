@@ -13,3 +13,14 @@ CREATE TABLE users
     name     VARCHAR UNIQUE NOT NULL,
     password VARCHAR        NOT NULL
 );
+
+CREATE TABLE user_stocks
+(
+		user_id  UUID NOT NULL,
+		stock_id UUID NOT NULL,
+		PRIMARY KEY (user_id, stock_id),
+        CONSTRAINT user_stocks_fk_1
+            FOREIGN KEY (user_id) REFERENCES users (uuid),
+        CONSTRAINT user_stocks_fk_2
+            FOREIGN KEY (stock_id) REFERENCES stocks (uuid)
+)

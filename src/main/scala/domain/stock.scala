@@ -25,7 +25,7 @@ object stock {
 
   @derive(show, decoder, encoder, eqv)
   @newtype
-  case class StockToken(value: String)
+  case class StockTicker(value: String)
 
   @derive(show, decoder, encoder, eqv)
   @newtype
@@ -34,19 +34,19 @@ object stock {
   @derive(decoder, encoder, eqv, show)
   case class Stock(
       id: StockId,
-      token: StockToken,
+      ticker: StockTicker,
       description: StockDescription
   )
 
   // Create
 
   @derive(decoder, encoder, show)
-  case class CreateStockParam(token: StockTokenParam, description: StockDescriptionParam) {
-    def toDomain: CreateStock = CreateStock(StockToken(token.value), StockDescription(description.value))
+  case class CreateStockParam(ticker: StockTickerParam, description: StockDescriptionParam) {
+    def toDomain: CreateStock = CreateStock(StockTicker(ticker.value), StockDescription(description.value))
   }
 
   case class CreateStock(
-      token: StockToken,
+      ticker: StockTicker,
       description: StockDescription
   )
 
@@ -58,22 +58,22 @@ object stock {
 
   @derive(decoder, encoder, show)
   @newtype
-  case class StockTokenParam(value: NonEmptyString)
+  case class StockTickerParam(value: NonEmptyString)
 
   @derive(queryParam, show)
   @newtype
-  case class StockQueryTokenParam(
+  case class StockQueryTickerParam(
       value: NonEmptyString
   ) {
-    def toDomain: StockToken = StockToken(value)
+    def toDomain: StockTicker = StockTicker(value)
   }
 
-  object StockQueryTokenParam {
-    implicit val jsonEncoder: Encoder[StockQueryTokenParam] =
+  object StockQueryTickerParam {
+    implicit val jsonEncoder: Encoder[StockQueryTickerParam] =
       Encoder.forProduct1("name")(_.value)
 
-    implicit val jsonDecoder: Decoder[StockQueryTokenParam] =
-      Decoder.forProduct1("name")(StockQueryTokenParam.apply)
+    implicit val jsonDecoder: Decoder[StockQueryTickerParam] =
+      Decoder.forProduct1("name")(StockQueryTickerParam.apply)
   }
 
 }
