@@ -21,7 +21,7 @@ final case class StockRoutes[F[_]: JsonDecoder: MonadThrow](
 
   private[routes] val prefixPath = "/stocks"
 
-  object StockTickerQueryParam extends OptionalQueryParamDecoderMatcher[StockQueryTickerParam]("token")
+  object StockTickerQueryParam extends OptionalQueryParamDecoderMatcher[StockQueryTickerParam]("ticker")
 
   private val httpRoutes: HttpRoutes[F] = HttpRoutes.of[F] {
     case GET -> Root :? StockTickerQueryParam(ticker) =>

@@ -32,6 +32,7 @@ object Stocks {
             ps.option(stockId)
           }
         }
+
       def findAll: F[List[Stock]] = postgres.use(_.execute(selectAll))
 
       def findBy(token: StockTicker): F[Option[Stock]] = postgres.use { session =>
@@ -69,14 +70,14 @@ private object StockSQL {
 
   val selectById: Query[StockId, Stock] =
     sql"""
-         select i.uuid, i.token, i.description
+         select i.uuid, i.ticker, i.description
          from stocks as i
          where i.uuid = $stockId
        """.query(decoder)
 
   val selectByTicker: Query[StockTicker, Stock] =
     sql"""
-        select i.uuid, i.token, i.description
+        select i.uuid, i.ticker, i.description
         from stocks as i
         where i.token LIKE $stockTicker
        """.query(decoder)

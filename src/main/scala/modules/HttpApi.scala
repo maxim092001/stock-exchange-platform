@@ -1,7 +1,8 @@
 package org.maximgran.stock_exchange_platform
 package modules
 
-import http.routes.{ StockRoutes, UserRoutes }
+import http.routes._
+import http.routes.secured._
 
 import cats.effect.Async
 import cats.syntax.all._
@@ -28,13 +29,16 @@ sealed abstract class HttpApi[F[_]: Async] private (
     JwtAuthMiddleware[F, CommonUser](security.userJwtAuth.value, security.usersAuth.findUser)
 
   // Auth routes
-  private val loginRoutes  = LoginRoutes[F](security.auth).routes
-  private val logoutRoutes = LogoutRoutes[F](security.auth).routes(usersMiddleware)
-  private val userRoutes   = UserRoutes[F](security.auth).routes
+  private val loginRoutes             = LoginRoutes[F](security.auth).routes
+  private val logoutRoutes            = LogoutRoutes[F](security.auth).routes(usersMiddleware)
+  private val userRoutes              = UserRoutes[F](security.auth).routes
+  private val userStocksSecuredRoutes = UserStocksSecuredRoutes[F](services.userStocks).routes(usersMiddleware)
 
-  private val stockRoutes = StockRoutes[F](services.stocks).routes
+  private val userStocksRoutes = UserStockRoutes[F](services.userStocks).routes
+  private val stockRoutes      = StockRoutes[F](services.stocks).routes
 
-  private val openRoutes: HttpRoutes[F] = stockRoutes <+> loginRoutes <+> logoutRoutes <+> userRoutes
+  private val openRoutes: HttpRoutes[F] =
+    stockRoutes <+> loginRoutes <+> logoutRoutes <+> userRoutes <+> userStocksRoutes <+> userStocksSecuredRoutes
 
   private val middleware: HttpRoutes[F] => HttpRoutes[F] = {
     { http: HttpRoutes[F] =>
