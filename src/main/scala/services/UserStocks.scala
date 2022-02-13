@@ -1,17 +1,15 @@
 package org.maximgran.stock_exchange_platform
 package services
 
-import domain.ID
-import domain.stock.{ CreateStock, Stock, StockId, StockTicker }
-import domain.userstocks._
-import effects.GenUUID
-import sql.codecs._
-import domain.auth._
-
 import cats.effect._
 import cats.syntax.all._
 import skunk._
 import skunk.implicits._
+
+import domain.userstocks._
+import domain.stock._
+import sql.codecs._
+import domain.auth._
 
 trait UserStocks[F[_]] {
   def findByUserId(userId: UserId): F[List[UserStock]]
@@ -21,7 +19,7 @@ trait UserStocks[F[_]] {
 }
 
 object UserStocks {
-  def make[F[_]: Concurrent: GenUUID](
+  def make[F[_]: Concurrent](
       postgres: Resource[F, Session[F]]
   ): UserStocks[F] =
     new UserStocks[F] {
@@ -35,7 +33,9 @@ object UserStocks {
 
       override def findAll: F[List[UserStock]] = postgres.use(_.execute(selectAll))
 
-      override def findById(id: UserStockId): F[Option[UserStock]] = ???
+      override def findById(id: UserStockId): F[Option[UserStock]] = postgres.use { session =>
+        session.prepare(selectById).use(_.option(id))
+      }
 
       override def create(userStocks: CreateUserStock): F[UserStockId] = postgres.use { session =>
         session.prepare(insertUserStock).use { cmd =>
@@ -59,12 +59,11 @@ object UserStocksSQL {
          select * from user_stocks
        """.query(decoder)
 
-  val selectById: Query[UserId ~ StockTicker, UserStock] =
+  val selectById: Query[UserStockId, UserStock] =
     sql"""
-         select us.userId, us.ticker
-         from user_stocks as us
-         where us.user_id = $userId AND us.ticker LIKE $stockTicker
-       """.query(decoder)
+         select * from user_stocks as us
+         where us.user_id = $userId AND us.ticker = $stockTicker
+         """.query(decoder).contramap { case UserStockId(id, t) => id ~ t }
 
   val selectByUserId: Query[UserId, UserStock] =
     sql"""

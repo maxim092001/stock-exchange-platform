@@ -22,5 +22,4 @@ object codecs {
 
   // Password
   val encPassword: Codec[EncryptedPassword] = varchar.imap[EncryptedPassword](EncryptedPassword(_))(_.value)
-
 }
