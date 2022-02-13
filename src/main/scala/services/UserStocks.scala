@@ -14,6 +14,7 @@ import skunk._
 import skunk.implicits._
 
 trait UserStocks[F[_]] {
+  def findByUserId(userId: UserId): F[List[UserStock]]
   def findById(id: UserStockId): F[Option[UserStock]]
   def findAll: F[List[UserStock]]
   def create(userStocks: CreateUserStock): F[UserStockId]
@@ -25,6 +26,12 @@ object UserStocks {
   ): UserStocks[F] =
     new UserStocks[F] {
       import UserStocksSQL._
+
+      override def findByUserId(userId: UserId): F[List[UserStock]] = postgres.use { session =>
+        session.prepare(selectByUserId).use { q =>
+          q.stream(userId, 1024).compile.toList
+        }
+      }
 
       override def findAll: F[List[UserStock]] = postgres.use(_.execute(selectAll))
 
@@ -56,7 +63,13 @@ object UserStocksSQL {
     sql"""
          select us.userId, us.ticker
          from user_stocks as us
-         where us.userId = $userId AND us.ticker LIKE $stockTicker
+         where us.user_id = $userId AND us.ticker LIKE $stockTicker
+       """.query(decoder)
+
+  val selectByUserId: Query[UserId, UserStock] =
+    sql"""
+         select * from user_stocks
+         where user_id = $userId
        """.query(decoder)
 
   val insertUserStock: Command[UserStock] =

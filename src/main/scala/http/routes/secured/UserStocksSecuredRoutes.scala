@@ -9,13 +9,10 @@ import org.http4s.circe.JsonDecoder
 import org.http4s.dsl.Http4sDsl
 import org.http4s.server.AuthMiddleware
 import org.http4s.server.Router
-import http.auth.users._
 
-import domain._
+import http.auth.users._
 import domain.userstocks._
 import ext.http4s.refined._
-import domain.auth._
-import services.Auth
 import services.UserStocks
 
 final case class UserStocksSecuredRoutes[F[_]: JsonDecoder: MonadThrow](
@@ -23,10 +20,13 @@ final case class UserStocksSecuredRoutes[F[_]: JsonDecoder: MonadThrow](
 ) extends Http4sDsl[F] {
   private[routes] val prefixPath = "/user_stocks_secured"
 
-  private val httpRoutes: AuthedRoutes[CommonUser, F] = AuthedRoutes.of { case ar @ POST -> Root / "buy" as user =>
-    ar.req.decodeR[BuyStock] { buyStock =>
-      userStocks.create(CreateUserStock(UserStockId(user.value.id, buyStock.ticker))) *> Created()
-    }
+  private val httpRoutes: AuthedRoutes[CommonUser, F] = AuthedRoutes.of {
+    case ar @ POST -> Root / "buy" as user =>
+      ar.req.decodeR[BuyStock] { buyStock =>
+        userStocks.create(CreateUserStock(UserStockId(user.value.id, buyStock.ticker))) *> Created()
+      }
+    case GET -> Root as user =>
+      Ok(userStocks.findByUserId(user.value.id))
   }
 
   def routes(authMiddleware: AuthMiddleware[F, CommonUser]): HttpRoutes[F] = Router(

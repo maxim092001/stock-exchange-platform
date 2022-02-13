@@ -1,12 +1,8 @@
 package org.maximgran.stock_exchange_platform
 package http.routes
 
-import domain.stock.{ CreateStockParam, Stock, StockQueryTickerParam, StockTickerParam }
-import ext.http4s.refined.RefinedRequestDecoder
-import services.Stocks
-
+import cats.MonadThrow
 import cats.syntax.all._
-import cats.{ Applicative, MonadThrow }
 import io.circe.JsonObject
 import io.circe.syntax._
 import org.http4s._
@@ -14,6 +10,10 @@ import org.http4s.circe.CirceEntityEncoder._
 import org.http4s.circe.JsonDecoder
 import org.http4s.dsl.Http4sDsl
 import org.http4s.server.Router
+
+import domain.stock.{ CreateStockParam, StockQueryTickerParam }
+import ext.http4s.refined.RefinedRequestDecoder
+import services.Stocks
 
 final case class StockRoutes[F[_]: JsonDecoder: MonadThrow](
     stocks: Stocks[F]

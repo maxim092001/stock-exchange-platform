@@ -6,7 +6,7 @@ version := "0.0.1"
 scalaVersion := "2.13.7"
 
 idePackagePrefix := Some("org.maximgran.stock_exchange_platform")
-scalacOptions ++= List("-Ymacro-annotations")
+scalacOptions ++= List("-Ymacro-annotations", "-Ywarn-unused")
 
 libraryDependencies ++= Seq(
   Libraries.cats,

@@ -1,23 +1,15 @@
 package org.maximgran.stock_exchange_platform
 package http.routes
 
-import domain._
-import domain.auth._
-import services.Auth
-import services.UserStocks
-import ext.http4s.refined._
-
-import cats.syntax.all._
-import cats.{ Applicative, MonadThrow }
-import io.circe.JsonObject
-import io.circe.syntax._
+import cats.MonadThrow
 import org.http4s._
 import org.http4s.circe.CirceEntityEncoder._
-import org.http4s.circe.JsonDecoder
 import org.http4s.dsl.Http4sDsl
 import org.http4s.server.Router
 
-final case class UserStockRoutes[F[_]: JsonDecoder: MonadThrow](
+import services.UserStocks
+
+final case class UserStockRoutes[F[_]: MonadThrow](
     userStocks: UserStocks[F]
 ) extends Http4sDsl[F] {
 

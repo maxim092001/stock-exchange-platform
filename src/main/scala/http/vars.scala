@@ -1,5 +1,6 @@
 package org.maximgran.stock_exchange_platform
 package http
+
 import domain.stock.StockId
 
 import cats.implicits._
