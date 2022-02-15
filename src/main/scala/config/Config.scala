@@ -30,9 +30,10 @@ object Config {
     (
       env("SE_POSTGRES_PASSWORD").as[NonEmptyString].secret,
       env("SE_ACCESS_TOKEN_SECRET_KEY").as[JwtAccessTokenKeyConfig].secret,
-      env("SE_PASSWORD_SALT").as[PasswordSalt].secret
+      env("SE_PASSWORD_SALT").as[PasswordSalt].secret,
+      env("SE_IV_AES").as[IvAES]
     )
-      .parMapN { (postgresPassword, tokenConfig, passwordSalt) =>
+      .parMapN { (postgresPassword, tokenConfig, passwordSalt, ivAES) =>
         AppConfig(
           httpServerConfig = HttpServerConfig(
             host = host"127.0.0.1",
@@ -55,7 +56,8 @@ object Config {
           tokenExpiration = TokenExpiration(30.minutes),
           redisConfig = RedisConfig(
             RedisURI("redis://167.99.248.97:6379")
-          )
+          ),
+          ivAES = ivAES
         )
 
       }

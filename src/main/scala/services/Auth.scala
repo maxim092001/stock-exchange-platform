@@ -71,7 +71,7 @@ object Auth {
     def login(username: UserName, password: Password): F[JwtToken] =
       users.find(username).flatMap {
         case None => UserNotFound(username).raiseError[F, JwtToken]
-        case Some(user) if user.password =!= crypto.encrypt(password) =>
+        case Some(user) if crypto.decrypt(user.password) =!= password =>
           InvalidPassword(user.name).raiseError[F, JwtToken]
         case Some(user) =>
           redis.get(username.show).flatMap {

@@ -35,6 +35,10 @@ object types {
   @newtype
   case class PasswordSalt(secret: NonEmptyString)
 
+  @derive(configDecoder, show)
+  @newtype
+  case class IvAES(value: NonEmptyString)
+
   @newtype case class TokenExpiration(value: FiniteDuration)
 
   case class AppConfig(
@@ -44,7 +48,8 @@ object types {
       httpServerConfig: HttpServerConfig,
       httpClientConfig: HttpClientConfig,
       postgreSQLConfig: PostgreSQLConfig,
-      redisConfig: RedisConfig
+      redisConfig: RedisConfig,
+      ivAES: IvAES
   )
 
   // http

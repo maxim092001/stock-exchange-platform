@@ -1,15 +1,15 @@
 package org.maximgran.stock_exchange_platform
 package services
 
-import domain.ID
-import domain.stock.{ CreateStock, Stock, StockId, StockTicker }
-import effects.GenUUID
-import sql.codecs._
-
 import cats.effect._
 import cats.syntax.all._
+import effects.GenUUID
 import skunk._
 import skunk.implicits._
+
+import domain.ID
+import domain.stock.{ CreateStock, Stock, StockId, StockTicker }
+import sql.codecs._
 
 trait Stocks[F[_]] {
   def findById(id: StockId): F[Option[Stock]]

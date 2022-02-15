@@ -36,10 +36,10 @@ object auth {
   case class EncryptedPassword(value: String)
 
   @newtype
-  case class EncryptCipher(cipher: Cipher)
+  case class EncryptCipher(value: Cipher)
 
   @newtype
-  case class DecryptCipher(cipher: Cipher)
+  case class DecryptCipher(value: Cipher)
 
   // User registration
 

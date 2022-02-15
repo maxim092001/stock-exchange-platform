@@ -1,18 +1,16 @@
 package org.maximgran.stock_exchange_platform
 
-import config.types._
-import config.Config
-import modules._
-import resources._
-
 import cats.effect._
 import cats.effect.std.Supervisor
 import dev.profunktor.redis4cats.log4cats._
 import eu.timepit.refined.auto._
-import org.maximgran.stock_exchange_platform.domain.auth.{ CreateUser, PasswordParam, UserNameParam }
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
-import io.circe.syntax._
+import config.Config
+import modules._
+import resources._
+
+import java.nio.charset.StandardCharsets
 
 object Server extends IOApp.Simple {
 
