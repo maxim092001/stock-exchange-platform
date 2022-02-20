@@ -12,7 +12,7 @@ Right now auth and simple get/add information about stock added.
 
 ## Roadmap
 
-* Connect with [Alphavantage](https://www.alphavantage.co/) for realtime stock prices support
+* Connect with [TradingView](tradingview.com/) for realtime stock prices support
 * Frontend written probably in [Elm](https://elm-lang.org/)
 * Migrate to [LogStage](https://izumi.7mind.io/logstage/index.html)
 
