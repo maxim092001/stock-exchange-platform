@@ -3,7 +3,7 @@ name := "stock-exchange-platform"
 
 version := "0.0.1"
 
-scalaVersion := "2.13.7"
+scalaVersion := "2.13.10"
 
 idePackagePrefix := Some("org.maximgran.stock_exchange_platform")
 scalacOptions ++= List("-Ymacro-annotations", "-Ywarn-unused")
